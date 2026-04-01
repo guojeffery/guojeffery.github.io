@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeffery Guo — Data & Business Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+:root {
+  --bg: #080c10;
+  --surface: #0d1117;
+  --surface-2: #161b22;
+  --border: #21262d;
+  --border-bright: #30363d;
+  --text: #e6edf3;
+  --text-muted: #7d8590;
+  --text-dim: #484f58;
+  --cyan: #39d0d8;
+  --cyan-dim: rgba(57, 208, 216, 0.12);
+  --cyan-glow: rgba(57, 208, 216, 0.06);
+  --green: #3fb950;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Space Grotesk', sans-serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+ 
+html { scroll-behavior: smooth; font-size: 16px; -webkit-font-smoothing: antialiased; }
+ 
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+ 
+::selection { background: var(--cyan); color: var(--bg); }
+ 
+/* Dot grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, #1e2530 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+ 
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 3rem);
+  position: relative;
+  z-index: 1;
+}
+ 
+/* REVEAL */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.d1 { transition-delay: 0.05s; }
+.d2 { transition-delay: 0.1s; }
+.d3 { transition-delay: 0.15s; }
+.d4 { transition-delay: 0.2s; }
+.d5 { transition-delay: 0.25s; }
+ 
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 1rem 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.4s, background 0.4s, backdrop-filter 0.4s;
+}
+nav.scrolled {
+  background: rgba(8, 12, 16, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom-color: var(--border);
+}
+nav .container { display: flex; justify-content: space-between; align-items: center; }
+ 
+.nav-logo {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.nav-logo-bracket { color: var(--cyan); }
+.nav-logo-name { color: var(--text); }
+ 
+.nav-links { display: flex; gap: 1.75rem; list-style: none; }
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+  position: relative;
+}
+.nav-links a::before { content: './'; color: var(--cyan); opacity: 0; transition: opacity 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::before { opacity: 1; }
+ 
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+ 
+/* HERO */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 8rem 0 5rem;
+  position: relative;
+}
+ 
+/* Scanning line animation */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scan 4s ease-in-out infinite;
+  opacity: 0.4;
+}
+@keyframes scan {
+  0% { top: 0%; opacity: 0; }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.4; }
+  100% { top: 100%; opacity: 0; }
+}
+ 
+.hero .container {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 4rem;
+  align-items: center;
+}
+ 
+.hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--cyan);
+  letter-spacing: 0.08em;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--cyan);
+}
+ 
+.hero-name {
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+ 
+.hero-role {
+  font-family: var(--mono);
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.hero-role-text { color: var(--cyan); }
+ 
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--cyan);
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+@keyframes blink { 50% { opacity: 0; } }
+ 
+.hero-desc {
+  font-size: 1rem;
+  color: var(--text-muted);
+  max-width: 460px;
+  line-height: 1.75;
+  margin-bottom: 2.5rem;
+}
+ 
+.hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; }
+ 
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.3s var(--ease);
+  cursor: pointer;
+  border: none;
+  position: relative;
+}
+ 
+.btn-primary {
+  background: var(--cyan);
+  color: var(--bg);
+  font-weight: 700;
+}
+.btn-primary:hover {
+  background: #fff;
+  box-shadow: 0 0 20px rgba(57, 208, 216, 0.4);
+}
+ 
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-bright);
+}
+.btn-ghost:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+ 
+/* Terminal panel */
+.terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+ 
+.terminal-bar {
+  background: var(--surface-2);
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.terminal-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+}
+.terminal-dot:nth-child(1) { background: #ff5f57; }
+.terminal-dot:nth-child(2) { background: #ffbd2e; }
+.terminal-dot:nth-child(3) { background: #28c840; }
+.terminal-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+ 
+.terminal-body {
+  padding: 1.25rem;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 2;
+}
+ 
+.t-prompt { color: var(--text-dim); }
+.t-cmd { color: var(--text); }
+.t-key { color: var(--cyan); }
+.t-val { color: var(--green); }
+.t-comment { color: var(--text-dim); font-style: italic; }
+.t-line { display: block; }
+ 
+/* STATUS STRIP */
+.status-strip {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface-2);
+}
+.status-dot {
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.status-text {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--green);
+  letter-spacing: 0.06em;
+}
+ 
+/* SECTIONS */
+section { padding: clamp(4rem, 8vw, 6rem) 0; position: relative; z-index: 1; }
+ 
+.sec-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sec-label::before { content: '//'; color: var(--text-dim); }
+ 
+.sec-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 3rem;
+}
+ 
+/* ABOUT */
+#about { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+ 
+.about-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+ 
+.about-text p {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+.about-text p strong { color: var(--text); font-weight: 600; }
+ 
+.about-quote {
+  margin: 1.75rem 0;
+  padding: 1.25rem 1.5rem;
+  background: var(--cyan-dim);
+  border-left: 2px solid var(--cyan);
+}
+.about-quote p {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--cyan);
+  line-height: 1.6;
+}
+ 
+.about-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+ 
+.meta-item {
+  padding: 1rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  transition: border-color 0.3s;
+}
+.meta-item:hover { border-color: var(--border-bright); }
+ 
+.meta-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.25rem;
+}
+.meta-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+ 
+/* PROJECTS */
+#projects { background: var(--bg); }
+ 
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+ 
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  position: relative;
+  transition: border-color 0.4s, box-shadow 0.4s;
+  overflow: hidden;
+}
+ 
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  transform: scaleX(0);
+  transition: transform 0.5s var(--ease);
+}
+.project-card:hover { border-color: var(--border-bright); box-shadow: 0 0 40px var(--cyan-glow); }
+.project-card:hover::before { transform: scaleX(1); }
+ 
+.project-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.project-tag::before {
+  content: '';
+  width: 4px; height: 4px;
+  background: var(--cyan);
+  border-radius: 50%;
+}
+ 
+.project-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.875rem;
+  line-height: 1.35;
+}
+ 
+.project-desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+ 
+.project-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 1.5rem;
+}
+.stack-tag {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  letter-spacing: 0.04em;
+}
+ 
+.project-footer {
+  display: flex;
+  gap: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+ 
+.proj-link {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: color 0.2s;
+  letter-spacing: 0.04em;
+}
+.proj-link:hover { color: var(--cyan); }
+ 
+/* SKILLS */
+#skills { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+ 
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+ 
+.skill-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 1.75rem;
+  transition: border-color 0.3s;
+}
+.skill-card:hover { border-color: var(--border-bright); }
+ 
+.skill-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+ 
+.skill-icon {
+  width: 28px; height: 28px;
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--cyan);
+  flex-shrink: 0;
+}
+ 
+.skill-card-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--cyan);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+ 
+.skill-list { list-style: none; }
+.skill-list li {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  padding: 0.4rem 0;
+  border-bottom: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s, padding-left 0.2s;
+}
+.skill-list li::before {
+  content: '>';
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.skill-list li:hover { color: var(--text); padding-left: 0.25rem; }
+.skill-list li:hover::before { color: var(--cyan); }
+ 
+/* CONTACT */
+#contact { background: var(--bg); }
+ 
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+}
+ 
+.contact-text {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+ 
+.contact-links { display: flex; flex-direction: column; }
+ 
+.c-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: all 0.25s;
+  position: relative;
+}
+.c-link:first-child { border-top: 1px solid var(--border); }
+.c-link::before {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -1px;
+  width: 0; height: 1px;
+  background: var(--cyan);
+  transition: width 0.4s var(--ease);
+}
+.c-link:hover { color: var(--text); padding-left: 0.5rem; }
+.c-link:hover::before { width: 100%; }
+ 
+.c-link-left { display: flex; align-items: center; gap: 1rem; }
+.c-link-key {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  width: 80px;
+}
+.c-link-val { font-size: 0.875rem; font-weight: 500; }
+.c-link-arrow {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  transition: color 0.2s, transform 0.2s;
+}
+.c-link:hover .c-link-arrow { color: var(--cyan); transform: translate(3px, -3px); }
+ 
+/* FOOTER */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 0;
+  position: relative;
+  z-index: 1;
+}
+footer .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-mono {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+}
+ 
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero .container { grid-template-columns: 1fr; }
+  .terminal { max-width: 480px; }
+  .about-layout { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .skills-grid { grid-template-columns: 1fr 1fr; }
+  .contact-layout { grid-template-columns: 1fr; }
+}
+ 
+@media (max-width: 600px) {
+  .nav-links {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(8, 12, 16, 0.97);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    z-index: 99;
+  }
+  .nav-links.open { display: flex; }
+  .nav-toggle { display: block; z-index: 101; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .about-meta { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-bracket">[</span>
+      <span class="nav-logo-name">jeffery.guo</span>
+      <span class="nav-logo-bracket">]</span>
+    </a>
+    <button class="nav-toggle" id="navToggle">[ menu ]</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">about</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+  </div>
+</nav>
+ 
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-eyebrow reveal">available_for_hire — summer_2026</div>
+      <h1 class="hero-name reveal d1">Jeffery Guo</h1>
+      <p class="hero-role reveal d2">
+        <span class="hero-role-text">MIS @ UMN Carlson</span>&nbsp;/&nbsp;Data &amp; Business Analyst
+        <span class="cursor"></span>
+      </p>
+      <p class="hero-desc reveal d3">
+        MIS student at UMN Carlson turning raw data into business decisions. I build analytics pipelines, interactive dashboards, and real-world tools that drive strategy.
+      </p>
+      <div class="hero-cta reveal d4">
+        <a href="#projects" class="btn btn-primary">./view_projects</a>
+        <a href="#contact" class="btn btn-ghost">./get_in_touch</a>
+      </div>
+    </div>
+ 
+    <!-- Terminal -->
+    <div class="terminal reveal d3">
+      <div class="terminal-bar">
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <div class="terminal-dot"></div>
+        <span class="terminal-title">jeffery_guo.json</span>
+      </div>
+      <div class="terminal-body">
+        <span class="t-line"><span class="t-prompt">$ </span><span class="t-cmd">cat profile.json</span></span>
+        <span class="t-line">{</span>
+        <span class="t-line">&nbsp;&nbsp;<span class="t-key">"name"</span>: <span class="t-val">"Jeffery Guo"</span>,</span>
+        <span class="t-line">&nbsp;&nbsp;<span class="t-key">"role"</span>: <span class="t-val">"MIS Student"</span>,</span>
+        <span class="t-line">&nbsp;&nbsp;<span class="t-key">"school"</span>: <span class="t-val">"UMN Carlson"</span>,</span>
+        <span class="t-line">&nbsp;&nbsp;<span class="t-key">"projects"</span>: <span class="t-val">2</span>,</span>
+        <span class="t-line">&nbsp;&nbsp;<span class="t-key">"counties_analyzed"</span>: <span class="t-val">"80+"</span>,</span>
+        <span class="t-line">&nbsp;&nbsp;<span class="t-key">"stack"</span>: [</span>
+        <span class="t-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-val">"SQL"</span>, <span class="t-val">"Python"</span>,</span>
+        <span class="t-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="t-val">"Tableau"</span>, <span class="t-val">"PostgreSQL"</span></span>
+        <span class="t-line">&nbsp;&nbsp;],</span>
+        <span class="t-line">&nbsp;&nbsp;<span class="t-key">"open_to_work"</span>: <span class="t-val">true</span></span>
+        <span class="t-line">}</span>
+      </div>
+      <div class="status-strip">
+        <div class="status-dot"></div>
+        <span class="status-text">AVAILABLE FOR SUMMER 2026</span>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="sec-label reveal">about</div>
+    <h2 class="sec-title reveal d1">Building the tools<br>the business needed.</h2>
+    <div class="about-layout">
+      <div class="about-text reveal d2">
+        <p>
+          I am a junior at the <strong>University of Minnesota Carlson School of Management</strong>, majoring in Management Information Systems. Before Carlson, I studied Accounting at NDSU — that financial foundation now shapes how I approach data.
+        </p>
+        <p>
+          As <strong>Managing Partner at H&J Property Development LLC</strong>, I run residential real estate operations across the Fargo-Moorhead market. I built custom analytics tools to support real acquisition decisions — not for class, but because the business needed better data.
+        </p>
+        <div class="about-quote reveal d3">
+          <p>// I build the systems that generate the analysis,<br>// and I use the results to make actual decisions.</p>
+        </div>
+        <p>
+          I am fluent in <strong>English and have conversational Mandarin Chinese</strong> and I am looking for a <strong>Summer 2026 internship</strong> in business analytics or data analysis in the Minneapolis metro.
+        </p>
+      </div>
+      <div class="about-meta reveal d3">
+        <div class="meta-item">
+          <div class="meta-label">school</div>
+          <div class="meta-value">UMN Carlson</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">major</div>
+          <div class="meta-value">MIS</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">graduation</div>
+          <div class="meta-value">May 2027</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">location</div>
+          <div class="meta-value">Minneapolis, MN</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">languages</div>
+          <div class="meta-value">EN / 中文</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">status</div>
+          <div class="meta-value" style="color: var(--green);">Open to Work ●</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <div class="sec-label reveal">projects</div>
+    <h2 class="sec-title reveal d1">Real data,<br>real decisions.</h2>
+    <div class="projects-grid">
+      <div class="project-card reveal d2">
+        <div class="project-tag">Real Estate Analytics</div>
+        <h3 class="project-title">Minnesota County Real Estate Investment Analysis</h3>
+        <p class="project-desc">
+          End-to-end analysis of 80+ Minnesota counties using Redfin and Zillow data. Built a 3-table PostgreSQL schema, wrote 8 SQL queries with CTEs and window functions, and delivered an interactive Tableau dashboard identifying investment opportunities below state median.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">PostgreSQL</span>
+          <span class="stack-tag">Python</span>
+          <span class="stack-tag">Tableau</span>
+          <span class="stack-tag">CTEs</span>
+          <span class="stack-tag">Window Functions</span>
+          <span class="stack-tag">ETL</span>
+        </div>
+        <div class="project-footer">
+          <a href="https://github.com/guo00517-gif/minnesota-county-real-estate-analysis" target="_blank" rel="noopener" class="proj-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+          <a href="https://public.tableau.com/app/profile/jeffery.guo/vizzes" target="_blank" rel="noopener" class="proj-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Live Dashboard
+          </a>
+        </div>
+      </div>
+ 
+      <div class="project-card reveal d3">
+        <div class="project-tag">Business Intelligence · H&amp;J Property Development</div>
+        <h3 class="project-title">Fargo-Moorhead Real Estate Investment Analysis</h3>
+        <p class="project-desc">
+          Built for H&J Property Development. Analyzed Zillow ZHVI data (2015-2025) across 10 FM metro zip codes. Identified Moorhead 56560 as a Value Opportunity at the 22nd metro percentile with 2.8% YoY appreciation and below-median pricing at $274K.
+        </p>
+        <div class="project-stack">
+          <span class="stack-tag">PostgreSQL</span>
+          <span class="stack-tag">Python/pandas</span>
+          <span class="stack-tag">Tableau</span>
+          <span class="stack-tag">Zillow ZHVI</span>
+          <span class="stack-tag">ETL Pipeline</span>
+        </div>
+        <div class="project-footer">
+          <a href="https://github.com/guo00517-gif/fargo-moorhead-real-estate-analysis" target="_blank" rel="noopener" class="proj-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+          <a href="https://public.tableau.com/app/profile/jeffery.guo/viz/Fargo-MoorheadRealEstateInvestmentAnalysis/Fargo-MoorheadRealEstateInvestmentAnalysis" target="_blank" rel="noopener" class="proj-link">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Live Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <div class="sec-label reveal">skills</div>
+    <h2 class="sec-title reveal d1">Tools I use<br>to get answers.</h2>
+    <div class="skills-grid">
+      <div class="skill-card reveal d2">
+        <div class="skill-card-header">
+          <div class="skill-icon">DB</div>
+          <div class="skill-card-title">Data &amp; Analytics</div>
+        </div>
+        <ul class="skill-list">
+          <li>SQL / PostgreSQL</li>
+          <li>Python / pandas</li>
+          <li>ETL Pipelines</li>
+          <li>Window Functions</li>
+          <li>CTEs &amp; Subqueries</li>
+          <li>Data Cleaning</li>
+        </ul>
+      </div>
+      <div class="skill-card reveal d3">
+        <div class="skill-card-header">
+          <div class="skill-icon">BI</div>
+          <div class="skill-card-title">Visualization &amp; BI</div>
+        </div>
+        <ul class="skill-list">
+          <li>Tableau</li>
+          <li>Power BI</li>
+          <li>Excel / Pivot Tables</li>
+          <li>Dashboard Design</li>
+          <li>Geospatial Mapping</li>
+          <li>Data Storytelling</li>
+        </ul>
+      </div>
+      <div class="skill-card reveal d4">
+        <div class="skill-card-header">
+          <div class="skill-icon">&lt;/&gt;</div>
+          <div class="skill-card-title">Business &amp; Tools</div>
+        </div>
+        <ul class="skill-list">
+          <li>GitHub / Git</li>
+          <li>pgAdmin / VS Code</li>
+          <li>Real Estate Operations</li>
+          <li>Mandarin Chinese</li>
+          <li>Business Strategy</li>
+          <li>Financial Analysis</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-label reveal">contact</div>
+    <h2 class="sec-title reveal d1">Let's talk.</h2>
+    <div class="contact-layout">
+      <div class="reveal d2">
+        <p class="contact-text">
+          I am actively looking for a Summer 2026 analytics or business analyst internship in Minneapolis. If you think my background is a fit, I would welcome the conversation.
+        </p>
+        <a href="mailto:Jguo.contact@gmail.com" class="btn btn-primary">./send_message</a>
+      </div>
+      <div class="contact-links reveal d3">
+        <a href="mailto:Jguo.contact@gmail.com" class="c-link">
+          <div class="c-link-left">
+            <span class="c-link-key">email</span>
+            <span class="c-link-val">Jguo.contact@gmail.com</span>
+          </div>
+          <span class="c-link-arrow">↗</span>
+        </a>
+        <a href="https://linkedin.com/in/jeffery-guo" target="_blank" rel="noopener" class="c-link">
+          <div class="c-link-left">
+            <span class="c-link-key">linkedin</span>
+            <span class="c-link-val">jeffery-guo</span>
+          </div>
+          <span class="c-link-arrow">↗</span>
+        </a>
+        <a href="https://github.com/guo00517-gif" target="_blank" rel="noopener" class="c-link">
+          <div class="c-link-left">
+            <span class="c-link-key">github</span>
+            <span class="c-link-val">guo00517-gif</span>
+          </div>
+          <span class="c-link-arrow">↗</span>
+        </a>
+        <a href="https://public.tableau.com/app/profile/jeffery.guo/vizzes" target="_blank" rel="noopener" class="c-link">
+          <div class="c-link-left">
+            <span class="c-link-key">tableau</span>
+            <span class="c-link-val">jeffery.guo / vizzes</span>
+          </div>
+          <span class="c-link-arrow">↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<footer>
+  <div class="container">
+    <span class="footer-mono">© 2026 Jeffery Guo</span>
+    <span class="footer-mono">Minneapolis, MN — MIS @ UMN Carlson</span>
+  </div>
+</footer>
+ 
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+ 
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 30);
+}, { passive: true });
+ 
+const toggle = document.getElementById('navToggle');
+const links = document.getElementById('navLinks');
+toggle.addEventListener('click', () => links.classList.toggle('open'));
+links.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => links.classList.remove('open'));
+});
+ 
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>
